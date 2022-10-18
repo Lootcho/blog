@@ -1,44 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-app.use(express.json());
+const path = require("path");
 const auth = require("./routes/auth")
-const authenticated = require("./middleware/authenticated")
+const user = require("./routes/user")
 
 
+app.use(express.json());
+app.use(express.static(path.join(__dirname,"public")))
 
 app.use("/user",auth)
-
-const Post = require("./models/Post.js")
-
-
-app.post("/post",authenticated,async function(req,res){
-    console.log(req)
-    const post = await new Post({
-        // title:"maison", en static
-        //title:req.body.title, en dynamique
-        title:req.body.title,
-        body:req.body.body,
-    })
-
-    const savepost = await post.save()
-    
-    return res.json(savepost)
-})
+app.use("/",user)
 
 
-app.get("/post",async function(req,res){
-
-    const post = await Post.find({})
-    return res.json(post)
-
-});
-app.get("/post/:id",async function(req,res){
-    console.log(req)
-    const post = await Post.findById(req.params.id)
-    return res.json(post)
-
-});
 mongoose.connect("mongodb+srv://loulou:Loulou31.@blog.jlbad.mongodb.net/?retryWrites=true&w=majority",{
     useNewUrlParser: true,
     useUnifiedTopology: true,

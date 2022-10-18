@@ -4,6 +4,12 @@ const Schema = mongoose.Schema;
 const User = new Schema({
     email:String,
     password:String,
+    pseudo:String,
+    image:{
+        public_id:String,
+        secure_url:String,
+    }
+    ,
 },{timestamps:true})
 
 const UserModel=mongoose.model("user",User)
