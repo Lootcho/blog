@@ -4,6 +4,7 @@ const app = express();
 const path = require("path");
 const auth = require("./routes/auth")
 const user = require("./routes/user")
+const post = require("./routes/post.route")
 
 
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.static(path.join(__dirname,"public")))
 
 app.use("/user",auth)
 app.use("/",user)
+app.use("/",post)
 
 
 mongoose.connect("mongodb+srv://loulou:Loulou31.@blog.jlbad.mongodb.net/?retryWrites=true&w=majority",{

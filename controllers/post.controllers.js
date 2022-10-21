@@ -1,12 +1,9 @@
-const Post = require("./models/Post.js")
-const authenticated = require("./middleware/authenticated")
+const Post = require("../models/Post.js")
 
 
-app.post("/post",authenticated,async function(req,res){
-    console.log(req)
+exports.createPost = async (req,res)=>{
+
     const post = await new Post({
-        // title:"maison", en static
-        //title:req.body.title, en dynamique
         title:req.body.title,
         body:req.body.body,
     })
@@ -14,22 +11,51 @@ app.post("/post",authenticated,async function(req,res){
     const savepost = await post.save()
     
     return res.json(savepost)
-})
+}
 
-
-app.get("/post",async function(req,res){
+exports.getPost = async (req,res) => {
 
     const post = await Post.find({})
     return res.json(post)
 
-});
-app.get("/post/:id",async function(req,res){
+};
+exports.getPostId = async (req,res) => {
     console.log(req)
     const post = await Post.findById(req.params.id)
     return res.json(post)
 
-});
+};
 
+exports.getPostUpdate = async (req,res) => {
+    const post = await Post.findByIdAndUpdate(req.params.id,{
+        $set:{
+            title:req.body.title,
+            body:req.body.body
+        }
+
+    },{
+        new:true
+    })
+    return res.json({
+        message:"post update",
+        post:post
+    })
+
+};
+
+
+
+
+
+exports.deletePost = async (req,res) => {
+    console.log(req)
+    const post = await Post.findByIdAndDelete(req.params.id)
+    return res.json({
+        message:"post supprimé",
+        post:post._id
+    })
+
+};
 
 
 
