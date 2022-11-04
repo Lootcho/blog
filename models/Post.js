@@ -3,10 +3,20 @@ const Schema = new mongoose.Schema({
     title:String,
     body:String,
     image:{
-        public_id:String,
-        secure_url:String,
+        imageId:String,
+        imageUrl:String,
     }
     ,
+    likes:[String],
+    dislikes:[String],
+    comments: {
+        type:
+          [{
+            commenterId: String,
+            contenu: String,
+            pseudo: String,
+          }]
+      },
 },{timestamps:true})
 
 const Post = mongoose.model("post",Schema);
