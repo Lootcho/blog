@@ -16,5 +16,9 @@ cloudinary.config({
       console.log(error);
     }
   };
+
+  const deleteImage = async (public_id) => {
+    return await cloudinary.uploader.destroy(public_id);
+  };
   
-  module.exports = { uploadImage };
+  module.exports = { uploadImage,deleteImage };

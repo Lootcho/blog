@@ -8,6 +8,7 @@ const post = require("./routes/post.route")
 
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public")))
 
 app.use("/user",auth)

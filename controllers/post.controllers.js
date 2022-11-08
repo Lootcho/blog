@@ -1,16 +1,17 @@
 const Post = require("../models/Post.js")
 const User = require("../models/User.js")
-const {uploadImage} = require("../utils/cloudinary")
+const {uploadImage,deleteImage} = require("../utils/cloudinary")
 const fs =require("fs-extra")
 
 
 
 exports.createPost = async (req,res)=>{
     const {title,body,userId}=req.body
+    console.log(userId)
     const path = req.file?.path
     let image;
     if(path){
-      const cloudinary = await uploadImage(path)
+      const cloudinary = await uploadImage(path,"post")
       image={
         imageId:cloudinary.public_id,
         imageUrl:cloudinary.secure_url
@@ -38,28 +39,62 @@ exports.getPost = async (req,res) => {
 
 };
 exports.getPostId = async (req,res) => {
-    console.log(req)
     const post = await Post.findById(req.params.id)
     return res.json(post)
 
 };
 
-exports.getPostUpdate = async (req,res) => {
-    const post = await Post.findByIdAndUpdate(req.params.id,{
-        $set:{
-            title:req.body.title,
-            body:req.body.body
-        }
-
-    },{
-        new:true
+/*exports.getPostUpdate = async (req,res) => {
+  const {title,userId } = req.body
+  const id = req.params.id
+  const path = req.file?.path
+  console.log(req.body.userId)
+  try {
+    const post = await Post.findById(id)
+    console.log(post.userId)
+    const dataImage = post.image.imageId
+    /*if (post.userId !== userId) {
+      return res.status(403).json({ message: "acces impossible" })
+    }
+    
+   
+     const result = await deleteImage(dataImage)
+     console.log(result)
+    
+  } catch (err) {
+    return res.status(500).json({ message: err.message })
+  }
+  try {
+    let image;
+    if (path) {
+      const cloudinary = await uploadImage(path, "post")
+      image = {
+        imageId: cloudinary.public_id,
+        imageUrl: cloudinary.secure_url
+      }
+      fs.unlinkSync(path)
+    }
+    const post = await Post.findByIdAndUpdate(id, {
+      $set: {
+        title,
+        image
+      }
+    }, {
+      new: true,
     })
-    return res.json({
-        message:"post update",
-        post:post
-    })
+    res.status(200).json(post)
 
-};
+  } catch (err) {
+    console.log(err)
+    res.status(400).json(err)
+  }
+
+}*/
+exports.getPostUpdate = async (req,res)=>{
+  const {body,userId,title} =  req.body
+  console.log(req.body)
+}
+
 
 
 
