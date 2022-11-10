@@ -8,8 +8,14 @@ const User = new Schema({
     image:{
         public_id:String,
         secure_url:String,
-    }
-    ,
+    },
+    followings:{
+        type:[String]
+    },
+    followers:{
+        type:[String]
+    },
+    
 },{timestamps:true})
 
 const UserModel=mongoose.model("user",User)

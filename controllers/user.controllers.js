@@ -40,10 +40,55 @@ const getUserUpdate = async function(req,res){
     }  
 }
 
+//follow
 
+const userFollow = async (req, res) => {
+    if (req.body.userId !== req.params.id) {
+      try {
+        const user = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.body.userId);
+  
+        if (!user.followers.includes(req.body.userId)) {
+          await user.updateOne({ $push: { followers: req.body.userId } });
+          await currentUser.updateOne({
+            $push: { followings: req.params.id },
+          });
+          res.status(200).json("vous suivez cette personne");
+        } else {
+          res.status(403).json("vous suivez déja cette personne");
+        }
+      } catch (error) {
+        res.status(403).json(error.message);
+      }
+    } else {
+      res.status(403).json("vous ne pouvez pas vous suivre");
+    }
+  };
 
+//unfollow
 
-
+const userUnFollow = async (req, res) => {
+    if (req.body.userId !== req.params.id) {
+      try {
+        const user = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.body.userId);
+  
+        if (user.followers.includes(req.body.userId)) {
+          await user.updateOne({ $pull: { followers: req.body.userId } });
+          await currentUser.updateOne({
+            $pull: { followings: req.params.id },
+          });
+          res.status(200).json("vous suivez plus cette personne");
+        } else {
+          res.status(403).json("vous suivez déja cette personne");
+        }
+      } catch (error) {
+        res.status(403).json(error.message);
+      }
+    } else {
+      res.status(403).json("vous ne pouvez pas vous suivre");
+    }
+  };
 
 
 
@@ -59,6 +104,8 @@ module.exports = {
     getUser,
     getUserId,
     getUserDelete,
-    getUserUpdate
+    getUserUpdate,
+    userFollow,
+    userUnFollow,
 }
 

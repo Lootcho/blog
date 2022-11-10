@@ -44,22 +44,22 @@ exports.getPostId = async (req,res) => {
 
 };
 
-/*exports.getPostUpdate = async (req,res) => {
-  const {title,userId } = req.body
+exports.getPostUpdate = async (req,res) => {
+  const {title,userId,body } = req.body
   const id = req.params.id
   const path = req.file?.path
-  console.log(req.body.userId)
   try {
     const post = await Post.findById(id)
-    console.log(post.userId)
     const dataImage = post.image.imageId
-    /*if (post.userId !== userId) {
+    if (post.userId !== userId) {
       return res.status(403).json({ message: "acces impossible" })
     }
-    
-   
+    if (path){
      const result = await deleteImage(dataImage)
      console.log(result)
+      
+    }
+   
     
   } catch (err) {
     return res.status(500).json({ message: err.message })
@@ -77,7 +77,8 @@ exports.getPostId = async (req,res) => {
     const post = await Post.findByIdAndUpdate(id, {
       $set: {
         title,
-        image
+        image,
+        body
       }
     }, {
       new: true,
@@ -89,10 +90,6 @@ exports.getPostId = async (req,res) => {
     res.status(400).json(err)
   }
 
-}*/
-exports.getPostUpdate = async (req,res)=>{
-  const {body,userId,title} =  req.body
-  console.log(req.body)
 }
 
 
@@ -193,3 +190,18 @@ exports.commentPost = async (req, res) => {
     }
   }
 
+  exports.getTimeline = async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const currentUser = await User.findById(userId);
+      const userPost = await Post.find({ userId: currentUser._id });
+      const friendsPosts = await Promise.all(
+        currentUser.followings.map((friendId) => {
+          return Post.find({ userId: friendId });
+        })
+      );
+      res.status(200).json(userPost.concat(...friendsPosts));
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
